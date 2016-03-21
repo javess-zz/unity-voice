@@ -17,7 +17,6 @@ namespace VoiceChat.Networking
         private static Dictionary<int, GameObject> proxies = new Dictionary<int, GameObject>();
 
         public bool isMine { get { return networkId >= 0 && networkId == localProxyId; } }
-
         [SyncVar]
         private int networkId = -1;
 
@@ -37,7 +36,8 @@ namespace VoiceChat.Networking
             }
             else
             {
-                VoiceChatPacketReceived += OnReceivePacket;
+				Debug.Log ("Registering packet manager!");
+				VoiceChatPacketReceived += OnReceivePacket;
             }
 
             if (isClient && (!isMine || VoiceChatSettings.Instance.LocalDebug))
@@ -60,10 +60,9 @@ namespace VoiceChat.Networking
         }
 
         private void OnReceivePacket(VoiceChatPacketMessage data)
-        {
-            if (data.proxyId == networkId && !isServer)
+        {			
+			if (data.proxyId == networkId)
             {
-                Debug.Log("Received a new Voice Sample. Playing!");
                 Debug.Log("[Receive] netid:" + data.packet.NetworkId + " -> " + data.packet.Length);
                 player.OnNewSample(data.packet);
             }
@@ -227,6 +226,11 @@ namespace VoiceChat.Networking
                 connection.Send(VoiceChatMsgType.Packet, data);
             }
 
+
+			// If we ever need to do a pass over local connections we could 
+			// do this. However in general I've seen these
+			// showing up in the NetwortServer.connections collection. 
+            /*
             foreach (var connection in NetworkServer.localConnections)
             {
                 if (connection == null || connection.connectionId == data.proxyId)
@@ -234,6 +238,7 @@ namespace VoiceChat.Networking
 
                 connection.Send(VoiceChatMsgType.Packet, data);
             }
+            */
 
         }
 
