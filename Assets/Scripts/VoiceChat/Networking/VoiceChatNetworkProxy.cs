@@ -19,7 +19,7 @@ namespace VoiceChat.Networking
         public bool isMine { get { return networkId >= 0 && networkId == localProxyId; } }
 
         [SyncVar]
-        private int networkId;
+        private int networkId = -1;
 
         VoiceChatPlayer player = null;
 
@@ -61,11 +61,10 @@ namespace VoiceChat.Networking
 
         private void OnReceivePacket(VoiceChatPacketMessage data)
         {
-            Debug.Log("Received a new Voice Sample. Playing!");
-            Debug.Log("[Receive] netid:" + data.packet.NetworkId + " -> " + data.packet.Length);
-
-            if (data.proxyId == networkId)
+            if (data.proxyId == networkId && !isServer)
             {
+                Debug.Log("Received a new Voice Sample. Playing!");
+                Debug.Log("[Receive] netid:" + data.packet.NetworkId + " -> " + data.packet.Length);
                 player.OnNewSample(data.packet);
             }
         }
