@@ -61,11 +61,8 @@ namespace VoiceChat.Networking
 
         private void OnReceivePacket(VoiceChatPacketMessage data)
         {
-
-            //if (LogFilter.logDebug)
-            //{
-            //    Debug.Log("Received a new Voice Sample. Playing!");
-            //}
+            Debug.Log("Received a new Voice Sample. Playing!");
+            Debug.Log("[Receive] netid:" + data.packet.NetworkId + " -> " + data.packet.Length);
 
             if (data.proxyId == networkId)
             {
@@ -81,12 +78,9 @@ namespace VoiceChat.Networking
                 packet = packet,
             };
 
-            //if (LogFilter.logDebug)
-            //{
-            //    Debug.Log("Got a new Voice Sample. Streaming!");
-            //}
-
-            NetworkManager.singleton.client.SendUnreliable(VoiceChatMsgType.Packet, packetMessage);
+            Debug.Log("Got a new Voice Sample. Streaming!");
+            
+            NetworkManager.singleton.client.Send(VoiceChatMsgType.Packet, packetMessage);
         }
 
 
@@ -231,7 +225,7 @@ namespace VoiceChat.Networking
                 if (connection == null || connection.connectionId == data.proxyId)
                     continue;
 
-                connection.SendUnreliable(VoiceChatMsgType.Packet, data);
+                connection.Send(VoiceChatMsgType.Packet, data);
             }
 
             foreach (var connection in NetworkServer.localConnections)
@@ -239,7 +233,7 @@ namespace VoiceChat.Networking
                 if (connection == null || connection.connectionId == data.proxyId)
                     continue;
 
-                connection.SendUnreliable(VoiceChatMsgType.Packet, data);
+                connection.Send(VoiceChatMsgType.Packet, data);
             }
 
         }

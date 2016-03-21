@@ -296,6 +296,7 @@ namespace VoiceChat
             // Set networkid of packet
             packet.NetworkId = NetworkId;
 
+            Debug.Log("[Transmit] netid:" + packet.NetworkId + " -> " + packet.Length);
             // Raise event
             NewSample(packet);
         }
