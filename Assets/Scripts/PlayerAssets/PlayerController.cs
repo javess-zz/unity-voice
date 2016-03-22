@@ -24,7 +24,7 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
-        var x = Input.GetAxis("Horizontal") * Time.deltaTime * 150.0f;
+        var x = Input.GetAxis("Horizontal") * Time.deltaTime * 30.0f;
         var z = Input.GetAxis("Vertical") * Time.deltaTime * 3.0f;
 
         transform.Rotate(0, x, 0);
@@ -58,7 +58,12 @@ public class PlayerController : NetworkBehaviour
     public override void OnStartLocalPlayer()
     {
         GetComponent<MeshRenderer>().material.color = Color.blue;
-        if (isClient) { 
+        if (isClient) {
+            var camera = Object.FindObjectOfType<OVRCameraRig>();
+            camera.transform.parent = this.transform;
+            camera.transform.localPosition = new Vector3(0, 1, 0);
+            camera.transform.forward = transform.forward;
+            GetComponent<MeshRenderer>().enabled = false;
             voiceChat = Instantiate<GameObject>(voiceChatPrefab.gameObject);
             voiceChat.transform.SetParent(transform);
 			gameObject.AddComponent<VoiceChatUi>();
